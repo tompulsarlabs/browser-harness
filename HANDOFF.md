@@ -10,11 +10,16 @@ byte-for-byte from the verified implementation. Controlled live evidence follows
 those source hashes; no new model-quality pass is claimed. See
 [verification](adapters/safari/verification.md) for the exact scope and open gaps.
 
-Current preparation: fork-ready branch; public publication awaits the repository owner's
-explicit public-visibility choice. GitHub requires a fork of public upstream to
-be public. The pre-existing private Safari repository remains the full archival
-source; this branch contains portable technical evidence and no personal session
-handoff or account details.
+Published with the repository owner's explicit approval at
+[tompulsarlabs/browser-harness](https://github.com/tompulsarlabs/browser-harness),
+a public GitHub fork of `browser-use/browser-harness`. `safari-adapter` is the
+default branch and local `origin`; `main` retains the upstream branch. The private
+Safari repository remains the full archival source and a backup of this branch.
+
+Implementation commit `78463db777b24174cbaf4b7f1e10a71c771200b8` is published.
+[Public-fork CI run 34342126663](https://github.com/tompulsarlabs/browser-harness/actions/runs/34342126663)
+passed all 27 Safari deterministic checks on that exact commit. No upstream PR
+or package release was created. This publication bookkeeping changes no runtime.
 
 Validation in this checkout passed: 15 Safari Python checks, 12 Safari Node checks,
 266 upstream unit tests, and two optional upstream MCP tests after installing its

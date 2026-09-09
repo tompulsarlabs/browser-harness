@@ -18,8 +18,8 @@ Safari repository remains the full archival source and a backup of this branch.
 
 Implementation commit `78463db777b24174cbaf4b7f1e10a71c771200b8` is published.
 [Public-fork CI run 34342126663](https://github.com/tompulsarlabs/browser-harness/actions/runs/34342126663)
-passed all 27 Safari deterministic checks on that exact commit. No upstream PR
-or package release was created. This publication bookkeeping changes no runtime.
+passed all 27 Safari deterministic checks on that exact commit. No package release
+was created. This publication bookkeeping changes no runtime.
 
 Validation in this checkout passed: 15 Safari Python checks, 12 Safari Node checks,
 266 upstream unit tests, and two optional upstream MCP tests after installing its
@@ -31,3 +31,23 @@ See [import checks](adapters/safari/evals/results/import-checks.json).
 
 No new Safari/Chrome browser or model-quality run was performed for the
 unchanged-source import. Prior live results are preserved with source hashes.
+
+## Upstream contribution
+
+[Draft PR #781](https://github.com/browser-use/browser-harness/pull/781) targets
+upstream `main` from `tompulsarlabs:contrib/safari-adapter`, commit
+`87b62ff2578db9e0340aa69f766727bd1c595fb6`. The separate contribution worktree is
+`browser-harness-contribution`; the fork's default branch remains `safari-adapter`.
+The upstream diff is one focused commit with 13 files: adapter, tests, CI and
+concise docs. Fork bookkeeping and archived logs stay outside the PR.
+
+Runtime, bundled skill, fixtures, regression tests and package metadata are
+byte-identical to the verified source. The contribution checkout passed 15 Safari
+Python tests, 12 Node tests and all 268 upstream unit tests with the MCP extra.
+[Fork CI run 34346406566](https://github.com/tompulsarlabs/browser-harness/actions/runs/34346406566)
+passed on the exact contribution commit. Upstream GitGuardian and skill-review
+checks passed; the PR was mergeable when submitted.
+
+Keep the PR in draft for feedback on the optional-package approach and documented
+target-identity limitations. No upstream merge was performed. Future PR changes
+belong on `contrib/safari-adapter`, not the fork's default/bookkeeping branch.

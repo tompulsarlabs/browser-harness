@@ -43,6 +43,17 @@ the checkbox so the agent can connect to your browser:
 - [`SKILL.md`](SKILL.md) teaches it the browser workflow.
 - [`src/browser_harness/`](src/browser_harness/) stays protected while the agent writes reusable helpers in its local workspace.
 
+## Experimental Safari adapter
+
+This fork includes an optional [Safari adapter](adapters/safari/README.md) for
+existing Safari tabs through macOS Apple Events. It uses a separate `safari-harness`
+CLI and package, with familiar helper names. Safari does not implement Chrome CDP;
+the existing `browser-harness` package and Chrome implementation are unchanged.
+
+The adapter has controlled live coverage for reading, form entry, clicking, and
+session reuse. Same-URL tab replacement and native navigation races remain open;
+see its [verification record](adapters/safari/verification.md).
+
 ## Scale with Browser Use Cloud
 
 Use your local browser for logged-in, personal work. When you want many browsers in parallel—with live previews, proxies, stealth, CAPTCHA solving, and more—scale with [Browser Use Cloud](https://cloud.browser-use.com/new-api-key).

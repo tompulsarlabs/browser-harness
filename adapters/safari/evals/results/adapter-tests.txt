@@ -1,0 +1,45 @@
+Using CPython 3.12.14
+Creating virtual environment at: .venv
+   Building safari-harness @ file://<adapter-checkout>
+      Built safari-harness @ file://<adapter-checkout>
+Installed 1 package in 1ms
+test_cdp_fails_explicitly (test_adapter.AdapterTests.test_cdp_fails_explicitly) ... ok
+test_no_implicit_user_tab (test_adapter.AdapterTests.test_no_implicit_user_tab) ... ok
+test_page_script_quotes_are_data (test_adapter.AdapterTests.test_page_script_quotes_are_data) ... ok
+test_permission_failure_is_not_success (test_adapter.AdapterTests.test_permission_failure_is_not_success) ... ok
+test_reject_executable_navigation_before_transport (test_adapter.AdapterTests.test_reject_executable_navigation_before_transport) ... ok
+test_timeout_does_not_retry_mutation (test_adapter.AdapterTests.test_timeout_does_not_retry_mutation) ... ok
+test_transport_passes_data_without_shell (test_adapter.AdapterTests.test_transport_passes_data_without_shell) ... ok
+test_failed_creation_clears_previous_target (test_adapter.SelectionSafetyTests.test_failed_creation_clears_previous_target) ... ok
+test_failed_selection_clears_previous_target (test_adapter.SelectionSafetyTests.test_failed_selection_clears_previous_target) ... ok
+test_local_creation_validation_failure_clears_previous_target (test_adapter.SelectionSafetyTests.test_local_creation_validation_failure_clears_previous_target) ... ok
+test_local_selection_validation_failure_clears_previous_target (test_adapter.SelectionSafetyTests.test_local_selection_validation_failure_clears_previous_target) ... ok
+test_no_selection_rejects_page_mutations_until_explicit_selection (test_adapter.SelectionSafetyTests.test_no_selection_rejects_page_mutations_until_explicit_selection) ... ok
+test_added_missing_and_duplicate_references_are_not_hidden (test_smoke.FixtureReferenceTests.test_added_missing_and_duplicate_references_are_not_hidden) ... ok
+test_real_reference_changes_are_still_rejected (test_smoke.FixtureReferenceTests.test_real_reference_changes_are_still_rejected) ... ok
+test_window_stacking_order_does_not_report_changed_tabs (test_smoke.FixtureReferenceTests.test_window_stacking_order_does_not_report_changed_tabs) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.001s
+
+OK
+✔ listing returns references without executing page scripts (2.024125ms)
+✔ stale URL blocks page script execution (0.329875ms)
+✔ closed window blocks navigation (0.674291ms)
+✔ identical tabs are rejected (0.234375ms)
+✔ new window is selected by identity (0.234917ms)
+✔ creation cannot silently attach to existing frontmost tab (0.201917ms)
+✔ navigation verifies old reference and returns new URL (0.211208ms)
+✔ script targets the explicitly selected tab object (0.201083ms)
+✔ execution-time cross-origin redirect blocks the page operation (0.484125ms)
+✔ execution-time same-origin URL change blocks the page operation (0.400791ms)
+✔ different origin and title variant blocks despite spoofed global aliases (0.367625ms)
+✔ matching execution-time URL evaluates the page operation exactly once (0.829791ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 44.283917

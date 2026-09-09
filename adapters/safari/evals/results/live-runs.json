@@ -1,0 +1,191 @@
+[
+  {
+    "timestamp_utc": "2026-09-09T09:45:56.286268+00:00",
+    "finished_utc": "2026-09-09T09:45:58.689248+00:00",
+    "fixture_version": 3,
+    "fixture_sha256": "a7c61bc1ee62a297c9d1588b499eec53823e495047f47012446ae81a7ef433aa",
+    "regression_sha256": "966aafba296abb2da9b23329776a56f150e670a4d2f0295ce279241b77ad6d89",
+    "runtime_sha256": {
+      "safari_harness/__init__.py": "7e68b8efca3c5d50d0d14bde86ed29a7cbcbb6ca9e7dfc6ddded621524fc3c1d",
+      "safari_harness/bridge.js": "6086d053e751dd21bb940856323b50a10ec944b6a45044eb075d86a58216b13a"
+    },
+    "skill_sha256": "89be006114419070082fd75099d206f7fc63e31970e9aa89caa0feae0a520107",
+    "eval_contract_version": 1,
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.14",
+    "node": "v24.18.0",
+    "safari": "26.6.2 (21624.5.1.11.3)",
+    "command": [
+      "uv",
+      "run",
+      "--python",
+      "3.12",
+      "python",
+      "scripts/smoke_safari.py"
+    ],
+    "repetition": 1,
+    "timeout_seconds": 150,
+    "exit_code": 0,
+    "elapsed_seconds": 2.389,
+    "expected": "Fixture loads and reuses within 30 seconds, exact input corpus, click count one, failed selection blocks writes and explicit recovery works, same-origin session marker persists",
+    "status": "PASS",
+    "criteria": [
+      "L1",
+      "L2",
+      "L4"
+    ],
+    "observed": {
+      "result": "passed",
+      "fixture_version": 3,
+      "checks": [
+        "new_window",
+        "load",
+        "separate_cli_reuse",
+        "session_marker",
+        "failed_selection_rejected",
+        "invalid_creation_url_rejected",
+        "exact_fill_corpus",
+        "single_click",
+        "read"
+      ],
+      "load_reuse_seconds": 0.803,
+      "click_count": 1,
+      "corpus_count": 3,
+      "recordings": "off"
+    },
+    "limitations": [
+      "No L3 live target-race/replacement check.",
+      "D1 live smoke covers stale index and local invalid creation URL; deterministic suite covers additional failures.",
+      "No model-quality evaluation.",
+      "Only this repetition is represented; promotion requires three per live criterion plus all D/A criteria."
+    ],
+    "provenance": "Portable extract of a completed local live run before import into this fork. Runtime, skill, fixture, and regression files are verified byte-identical; the run was not repeated or simulated for publication.",
+    "trace": "live-run-1.txt"
+  },
+  {
+    "timestamp_utc": "2026-09-09T09:45:58.689653+00:00",
+    "finished_utc": "2026-09-09T09:46:01.093856+00:00",
+    "fixture_version": 3,
+    "fixture_sha256": "a7c61bc1ee62a297c9d1588b499eec53823e495047f47012446ae81a7ef433aa",
+    "regression_sha256": "966aafba296abb2da9b23329776a56f150e670a4d2f0295ce279241b77ad6d89",
+    "runtime_sha256": {
+      "safari_harness/__init__.py": "7e68b8efca3c5d50d0d14bde86ed29a7cbcbb6ca9e7dfc6ddded621524fc3c1d",
+      "safari_harness/bridge.js": "6086d053e751dd21bb940856323b50a10ec944b6a45044eb075d86a58216b13a"
+    },
+    "skill_sha256": "89be006114419070082fd75099d206f7fc63e31970e9aa89caa0feae0a520107",
+    "eval_contract_version": 1,
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.14",
+    "node": "v24.18.0",
+    "safari": "26.6.2 (21624.5.1.11.3)",
+    "command": [
+      "uv",
+      "run",
+      "--python",
+      "3.12",
+      "python",
+      "scripts/smoke_safari.py"
+    ],
+    "repetition": 2,
+    "timeout_seconds": 150,
+    "exit_code": 0,
+    "elapsed_seconds": 2.385,
+    "expected": "Fixture loads and reuses within 30 seconds, exact input corpus, click count one, failed selection blocks writes and explicit recovery works, same-origin session marker persists",
+    "status": "PASS",
+    "criteria": [
+      "L1",
+      "L2",
+      "L4"
+    ],
+    "observed": {
+      "result": "passed",
+      "fixture_version": 3,
+      "checks": [
+        "new_window",
+        "load",
+        "separate_cli_reuse",
+        "session_marker",
+        "failed_selection_rejected",
+        "invalid_creation_url_rejected",
+        "exact_fill_corpus",
+        "single_click",
+        "read"
+      ],
+      "load_reuse_seconds": 0.781,
+      "click_count": 1,
+      "corpus_count": 3,
+      "recordings": "off"
+    },
+    "limitations": [
+      "No L3 live target-race/replacement check.",
+      "D1 live smoke covers stale index and local invalid creation URL; deterministic suite covers additional failures.",
+      "No model-quality evaluation.",
+      "Only this repetition is represented; promotion requires three per live criterion plus all D/A criteria."
+    ],
+    "provenance": "Portable extract of a completed local live run before import into this fork. Runtime, skill, fixture, and regression files are verified byte-identical; the run was not repeated or simulated for publication.",
+    "trace": "live-run-2.txt"
+  },
+  {
+    "timestamp_utc": "2026-09-09T09:46:01.094186+00:00",
+    "finished_utc": "2026-09-09T09:46:03.497613+00:00",
+    "fixture_version": 3,
+    "fixture_sha256": "a7c61bc1ee62a297c9d1588b499eec53823e495047f47012446ae81a7ef433aa",
+    "regression_sha256": "966aafba296abb2da9b23329776a56f150e670a4d2f0295ce279241b77ad6d89",
+    "runtime_sha256": {
+      "safari_harness/__init__.py": "7e68b8efca3c5d50d0d14bde86ed29a7cbcbb6ca9e7dfc6ddded621524fc3c1d",
+      "safari_harness/bridge.js": "6086d053e751dd21bb940856323b50a10ec944b6a45044eb075d86a58216b13a"
+    },
+    "skill_sha256": "89be006114419070082fd75099d206f7fc63e31970e9aa89caa0feae0a520107",
+    "eval_contract_version": 1,
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.14",
+    "node": "v24.18.0",
+    "safari": "26.6.2 (21624.5.1.11.3)",
+    "command": [
+      "uv",
+      "run",
+      "--python",
+      "3.12",
+      "python",
+      "scripts/smoke_safari.py"
+    ],
+    "repetition": 3,
+    "timeout_seconds": 150,
+    "exit_code": 0,
+    "elapsed_seconds": 2.386,
+    "expected": "Fixture loads and reuses within 30 seconds, exact input corpus, click count one, failed selection blocks writes and explicit recovery works, same-origin session marker persists",
+    "status": "PASS",
+    "criteria": [
+      "L1",
+      "L2",
+      "L4"
+    ],
+    "observed": {
+      "result": "passed",
+      "fixture_version": 3,
+      "checks": [
+        "new_window",
+        "load",
+        "separate_cli_reuse",
+        "session_marker",
+        "failed_selection_rejected",
+        "invalid_creation_url_rejected",
+        "exact_fill_corpus",
+        "single_click",
+        "read"
+      ],
+      "load_reuse_seconds": 0.78,
+      "click_count": 1,
+      "corpus_count": 3,
+      "recordings": "off"
+    },
+    "limitations": [
+      "No L3 live target-race/replacement check.",
+      "D1 live smoke covers stale index and local invalid creation URL; deterministic suite covers additional failures.",
+      "No model-quality evaluation.",
+      "Only this repetition is represented; promotion requires three per live criterion plus all D/A criteria."
+    ],
+    "provenance": "Portable extract of a completed local live run before import into this fork. Runtime, skill, fixture, and regression files are verified byte-identical; the run was not repeated or simulated for publication.",
+    "trace": "live-run-3.txt"
+  }
+]

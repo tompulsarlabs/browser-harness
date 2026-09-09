@@ -1,0 +1,75 @@
+{
+  "recorded_at_utc": "2026-09-09T10:23:11.786179+00:00",
+  "upstream_commit": "afbcc381b963040c19627d788e40c7e7663171ee",
+  "eval_contract_version": 1,
+  "runtime_sha256": {
+    "safari_harness/__init__.py": "7e68b8efca3c5d50d0d14bde86ed29a7cbcbb6ca9e7dfc6ddded621524fc3c1d",
+    "safari_harness/bridge.js": "6086d053e751dd21bb940856323b50a10ec944b6a45044eb075d86a58216b13a"
+  },
+  "skill_sha256": "89be006114419070082fd75099d206f7fc63e31970e9aa89caa0feae0a520107",
+  "fixture_sha256": "a7c61bc1ee62a297c9d1588b499eec53823e495047f47012446ae81a7ef433aa",
+  "regression_sha256": "966aafba296abb2da9b23329776a56f150e670a4d2f0295ce279241b77ad6d89",
+  "checks": [
+    {
+      "command": "uv run --python 3.12 python -m unittest discover -s tests -v && node --test tests/bridge.test.cjs",
+      "cwd": "adapters/safari",
+      "status": "PASS",
+      "exit_code": 0,
+      "python_tests": 15,
+      "node_tests": 12,
+      "trace": "adapter-tests.txt"
+    },
+    {
+      "command": "uv run --python 3.12 --with pytest python -m pytest tests/unit -q",
+      "cwd": ".",
+      "status": "PASS",
+      "exit_code": 0,
+      "passed": 266,
+      "skipped_modules": 1,
+      "skip_reason": "Optional mcp dependency absent; checked in the following targeted run.",
+      "trace": "upstream-unit-tests.txt"
+    },
+    {
+      "command": "uv run --python 3.12 --extra mcp --with pytest python -m pytest tests/unit/test_mcp_server.py -q -rs",
+      "cwd": ".",
+      "status": "PASS",
+      "exit_code": 0,
+      "passed": 2,
+      "trace": "upstream-mcp-tests.txt"
+    },
+    {
+      "command": "uv build --python 3.12 --out-dir <temporary-dist-directory>",
+      "cwd": "adapters/safari",
+      "status": "PASS",
+      "exit_code": 0,
+      "observed": "Source distribution and wheel built."
+    },
+    {
+      "command": "Python zipfile inspection of built wheel",
+      "status": "PASS",
+      "observed": "__init__.py, bridge.js, SKILL.md and CLI entry point present; packaged source bytes match; no browser_harness files in wheel.",
+      "wheel_sha256": "8e050123a70f3568f001fd662b748f81b6bafc1f6c3bc7ff3a0c3103f1f37e46"
+    },
+    {
+      "command": "uv run --isolated --no-project --python 3.12 --with <built-wheel> safari-harness --version",
+      "status": "PASS",
+      "exit_code": 0,
+      "observed": "0.1.0"
+    },
+    {
+      "command": "git diff --exit-code upstream/main -- src pyproject.toml SKILL.md install.md",
+      "status": "PASS",
+      "exit_code": 0,
+      "observed": "No changes to upstream runtime/package/skill/install guide."
+    },
+    {
+      "command": "SHA-256 and byte comparison of imported runtime, skill, fixture and regression files against original live-run records",
+      "status": "PASS",
+      "observed": "All match."
+    }
+  ],
+  "trace_format_note": "Adapter checkout path replaced with <adapter-checkout>; trailing whitespace removed from test output. Build temporary paths are represented as placeholders. Test outcomes and synthetic live stdout are unchanged.",
+  "new_live_runs": "NOT RUN; imported runtime, skill and fixtures are byte-identical to the three recorded live passes.",
+  "agent_quality": "NOT RUN",
+  "promotion_gate": "NOT MET; see evals/cases.md"
+}

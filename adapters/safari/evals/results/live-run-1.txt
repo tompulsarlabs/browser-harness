@@ -1,0 +1,1 @@
+{"result": "passed", "fixture_version": 3, "checks": ["new_window", "load", "separate_cli_reuse", "session_marker", "failed_selection_rejected", "invalid_creation_url_rejected", "exact_fill_corpus", "single_click", "read"], "load_reuse_seconds": 0.803, "click_count": 1, "corpus_count": 3, "recordings": "off"}

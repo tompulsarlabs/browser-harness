@@ -77,3 +77,16 @@ were corrected, not counted as passes. [Case record](evals/privacy/2026-09-21.js
 contains source hashes and evidence limits. No new live-browser or model-quality
 pass is claimed. Install a reviewed fork commit to retain these protections;
 upstream PyPI reinstallation would replace them.
+
+Shipped as [fork PR #1](https://github.com/tompulsarlabs/browser-harness/pull/1),
+merged into `safari-adapter` at `d04d0531d1cb7862d9197314bd80a3f9eef8813b`.
+Runtime commit `057c05d1ae850bbf87ad5b1472b0a6b738d85cdb` passed both
+[branch CI](https://github.com/tompulsarlabs/browser-harness/actions/runs/35571945226)
+and [PR CI](https://github.com/tompulsarlabs/browser-harness/actions/runs/35571972938).
+The local uv Chrome tool now installs that exact Git commit with its MCP extra;
+installed `run.py` and `telemetry.py` hashes match the tested source. Installed
+CLI status reports `enabled: false`, policy `content-free-v1`, with no environment
+override. Existing recording preference remains false. The standalone Safari
+installation is unchanged. Local default checkout was fast-forwarded, preserving
+pre-existing uncommitted files; contribution checkout and upstream draft PR were
+not modified. No PyPI release was published.

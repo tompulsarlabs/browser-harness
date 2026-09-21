@@ -51,3 +51,29 @@ checks passed; the PR was mergeable when submitted.
 Keep the PR in draft for feedback on the optional-package approach and documented
 target-identity limitations. No upstream merge was performed. Future PR changes
 belong on `contrib/safari-adapter`, not the fork's default/bookkeeping branch.
+
+## Privacy hardening — 2026-09-21
+
+Tom authorized retaining the fork's browser/product-analysis capabilities and
+shipping a security patch. Chrome harness usage analytics now require fresh
+explicit content-free-v1 consent; legacy defaults do not enable sending.
+The export boundary uses an allowlist for operation names, counts, lengths,
+timings, outcomes and runtime metadata. Scripts, stdout content, form/helper
+arguments, URLs, exception text and client/model environment strings are excluded.
+Outbound analytics require HTTPS and do not follow redirects. Browser output
+still reaches the calling agent. No new local page logs or recordings are added.
+
+The Safari adapter and its separately installed private runtime are unchanged;
+they have no telemetry sender. The fork now intentionally differs from upstream
+in Chrome analytics policy. The upstream draft Safari PR is outside this patch.
+Gstack is outside scope and unchanged. This does not solve the previously recorded
+Safari document-identity/native-navigation limitations or sandbox arbitrary Python.
+
+Deterministic checks: 285 harness unit tests (including 17 privacy regressions and
+MCP tests), 15 Safari Python tests, 12 Safari Node tests; wheel build passed.
+The original code failed 14 of the initial 15 privacy regressions. The baseline's
+first missing-pytest attempt and Node's first incorrect working-directory attempt
+were corrected, not counted as passes. [Case record](evals/privacy/2026-09-21.json)
+contains source hashes and evidence limits. No new live-browser or model-quality
+pass is claimed. Install a reviewed fork commit to retain these protections;
+upstream PyPI reinstallation would replace them.

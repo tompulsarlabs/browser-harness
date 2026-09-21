@@ -1,0 +1,34 @@
+{
+  "date_utc": "2026-09-21T07:13:23.110857+00:00",
+  "baseline_commit": "eec2448cabf91a7166a10325d681f7915d244e7e",
+  "candidate_sha256": {
+    "src/browser_harness/run.py": "37ff34444d184659f7baed52f8fc414b30b9720efa96bff86ad362f06327d860",
+    "src/browser_harness/telemetry.py": "2833d8b41ff33f1b1bbd299f6abd5a99bca82b0dede63922af62872dd7c3259a",
+    "tests/unit/test_telemetry.py": "c0627043fe4277128cf170736aa32ba2e636d41b09db8688acdc5f58a0a03e01"
+  },
+  "cases": {
+    "P1": "Absent, legacy, malformed, non-object and boolean-version consent fail closed",
+    "P2": "Explicit opt-in and environment disable override",
+    "P3": "Synthetic script, output, form values, errors and environment strings absent from payload",
+    "P4": "Fixed operation metrics retained; arbitrary event names and generic fields rejected",
+    "P5": "CLI stdout remains available to caller without telemetry capture",
+    "P6": "Form arguments and error strings not retained in helper trace",
+    "P7": "Reject HTTP and credential/query destinations; refuse redirects",
+    "P8": "Intercept actual sender subprocess and inspect serialized metrics"
+  },
+  "results": {
+    "upstream_privacy_baseline": "14 failed, 1 passed (initial 15-case regression suite)",
+    "candidate_harness_unit": "285 passed, including all 17 privacy cases and MCP checks",
+    "safari_python": "15 passed",
+    "safari_node": "12 passed after correcting working directory",
+    "wheel": "uv build --wheel succeeded",
+    "live_browser": "NOT RUN; browser primitives unchanged",
+    "agent_quality": "NOT RUN; skill and agent policy unchanged"
+  },
+  "limitations": [
+    "Initial baseline attempt lacked pytest; corrected with uv --with pytest; not counted as a behavioral failure.",
+    "Initial Node invocation from repo root failed to find bridge.js; corrected command runs in adapters/safari.",
+    "No evidence of historical transmission or deletion from vendor systems.",
+    "Safari same-URL replacement and native navigation races remain unresolved."
+  ]
+}

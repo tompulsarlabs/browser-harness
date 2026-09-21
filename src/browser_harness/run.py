@@ -64,7 +64,7 @@ Commands:
   browser-harness video init <recording>      prepare a recording for editing
   browser-harness video review <recording>    compile and review the video
   browser-harness video export <recording> --reviewed   export a verified MP4
-  browser-harness telemetry status    show anonymous telemetry opt-out state
+  browser-harness telemetry status    show content-free analytics consent state
   browser-harness --update [-y]    pull the latest version (agents: pass -y)
   browser-harness --reload         stop the daemon so next call picks up code changes
 """
@@ -143,14 +143,8 @@ def _exit_code(result) -> int:
     return 1
 
 _MAX_TRACED_STEPS = 500
-_MAX_STEP_ARGS_LENGTH = 300
 _helper_trace = []
 _helper_call_count = 0
-
-
-def _step_args(args, kwargs):
-    parts = [repr(a) for a in args] + [f"{k}={v!r}" for k, v in kwargs.items()]
-    return ", ".join(parts)[:_MAX_STEP_ARGS_LENGTH]
 
 
 def _traced(name, fn):
@@ -160,7 +154,7 @@ def _traced(name, fn):
     def wrapper(*args, **kwargs):
         global _helper_call_count
         _helper_call_count += 1
-        entry = {"helper": name, "args": _step_args(args, kwargs)}
+        entry = {"helper": name}
         if len(_helper_trace) < _MAX_TRACED_STEPS:
             _helper_trace.append(entry)
         step_start = time.monotonic()
@@ -168,7 +162,7 @@ def _traced(name, fn):
             result = fn(*args, **kwargs)
         except BaseException as exc:
             entry["duration_seconds"] = round(time.monotonic() - step_start, 3)
-            entry["error"] = str(exc)[:300]
+            entry["failed"] = True
             raise
         entry["duration_seconds"] = round(time.monotonic() - step_start, 3)
         recorder.observe(name, args, kwargs, entry["duration_seconds"])
@@ -190,9 +184,6 @@ def _install_helper_trace():
             g[name] = _traced(name, fn)
 
 
-_MAX_OUTPUT_LENGTH = 20_000
-
-
 class _StreamTail:
     """Pass-through stream wrapper that remembers the tail and total length."""
 
@@ -205,7 +196,7 @@ class _StreamTail:
     def write(self, text):
         text = str(text)
         self.length += len(text)
-        self.tail = (self.tail + text)[-self._limit :]
+        self.tail = (self.tail + text)[-self._limit :] if self._limit else ""
         return self._wrapped.write(text)
 
     def __getattr__(self, name):
@@ -248,7 +239,7 @@ def main():
     command = _telemetry_command(args)
     task = _read_task(args)
     stderr_tail = _StreamTail(sys.stderr)
-    stdout_tail = _StreamTail(sys.stdout, limit=_MAX_OUTPUT_LENGTH)
+    stdout_tail = _StreamTail(sys.stdout, limit=0)
     sys.stderr = stderr_tail
     sys.stdout = stdout_tail
     try:

@@ -48,11 +48,44 @@ the checkbox so the agent can connect to your browser:
 This fork includes an optional [Safari adapter](adapters/safari/README.md) for
 existing Safari tabs through macOS Apple Events. It uses a separate `safari-harness`
 CLI and package, with familiar helper names. Safari does not implement Chrome CDP;
-the existing `browser-harness` package and Chrome implementation are unchanged.
+the Safari runtime remains separate from the Chrome implementation.
 
 The adapter has controlled live coverage for reading, form entry, clicking, and
 session reuse. Same-URL tab replacement and native navigation races remain open;
 see its [verification record](adapters/safari/verification.md).
+
+## Privacy in this fork
+
+Product inspection, page analysis, and browser automation stay available with
+usage analytics disabled. Browser data returned to your agent is still subject
+to that agent's own data-handling policy; the harness is not a Python sandbox.
+Only run trusted scripts and authorize access to the intended tabs/accounts.
+
+This fork's optional usage analytics are **off until explicitly enabled**:
+
+```sh
+browser-harness telemetry status
+browser-harness telemetry enable   # opt in to content-free usage metrics
+browser-harness telemetry disable
+```
+
+Opt-in sends operation names, counts, lengths, timings, outcomes, runtime versions,
+and a random installation ID to Browser Use's EU PostHog project. It never sends
+scripts, page output, URLs, selectors, form values, exception messages, custom
+helper names, or model/client environment strings. Aggregate metrics remain
+available for product usage analysis; raw content is not an analytics option.
+The destination can be overridden with `BH_POSTHOG_HOST` (HTTPS only, no redirects).
+`BH_TELEMETRY=0` overrides consent. Legacy configuration requires fresh opt-in.
+The Safari adapter has no analytics sender and remains unchanged.
+
+Install the reviewed fork commit rather than the upstream PyPI package to retain
+this policy:
+
+```sh
+uv tool install --python 3.12 --force 'browser-harness[mcp] @ git+https://github.com/tompulsarlabs/browser-harness.git@<reviewed-commit>'
+```
+
+Do not use the upstream setup prompt above to reinstall this security fork.
 
 ## Scale with Browser Use Cloud
 

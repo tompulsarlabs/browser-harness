@@ -118,3 +118,12 @@ browser-harness telemetry disable
 ```
 
 State lives under `${XDG_CONFIG_HOME:-~/.config}/browser-harness` by default: auth, telemetry id, agent workspace, runtime sockets, logs, screenshots, and temp files. Override with `BH_HOME` or `BROWSER_HARNESS_HOME`.
+
+## Fork privacy policy
+
+This fork requires explicit `browser-harness telemetry enable` consent for
+content-free usage analytics. Existing opt-out configurations do not count as
+consent. `BH_TELEMETRY=0` always disables analytics. Page analysis and automation
+work without analytics. See [privacy details](README.md#privacy-in-this-fork)
+for exported fields and pinned fork installation; reinstalling upstream PyPI
+would replace this patch.

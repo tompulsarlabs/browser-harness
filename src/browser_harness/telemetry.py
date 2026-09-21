@@ -1,8 +1,9 @@
-"""Best-effort, opt-out telemetry for browser-harness."""
+"""Best-effort, explicitly opted-in, content-free usage analytics for browser-harness."""
 
 from __future__ import annotations
 
 import json
+import math
 import os
 import platform
 import re
@@ -18,27 +19,42 @@ from . import paths
 POSTHOG_KEY = "phc_rCPCLPtaXB3EuBdiH7JLKtU2Wj5iPnuwdsbw58CnjYXc"
 POSTHOG_HOST = "https://eu.i.posthog.com"
 DISABLE_ENVS = ("BH_TELEMETRY", "BROWSER_HARNESS_TELEMETRY", "ANONYMIZED_TELEMETRY")
-MAX_TASK_LENGTH = 20_000
-FORBIDDEN_KEYS = (
-    "api_key",
-    "content",
-    "cookie",
-    "email",
-    "href",
-    "key",
-    "message",
-    "password",
-    "path",
-    "prompt",
-    "query",
-    "secret",
-    "selector",
-    "text",
-    "title",
-    "token",
-    "url",
-    "uri",
-)
+CONSENT_VERSION = 1
+COMMANDS = frozenset("script help version doctor update reload debug-clicks auth skill mac-approve recordings telemetry video usage".split())
+HELPERS = frozenset("cdp drain_events goto_url page_info click_at_xy type_text fill_input press_key scroll capture_screenshot list_tabs current_tab activate_tab switch_tab new_tab close_tab ensure_real_tab iframe_target wait wait_for_load wait_for_element wait_for_network_idle js dispatch_key upload_file http_get".split())
+
+
+def _number(value, *, integer=False):
+    if type(value) not in (int, float) or (integer and type(value) is not int):
+        return None
+    return value if math.isfinite(value) and 0 <= value <= 1_000_000_000 else None
+
+
+def _choice(value, allowed):
+    return value if isinstance(value, str) and value in allowed else "other"
+
+
+def _safe_properties(properties: dict | None) -> dict:
+    """Allowlist at the export boundary; never export caller-controlled text."""
+    p = properties if isinstance(properties, dict) else {}
+    out = {
+        "action": _choice(p.get("action"), {"completed", "error"}),
+        "command": _choice(p.get("command"), COMMANDS),
+        "browser": _choice(p.get("browser"), {"cloud", "cdp", "local"}),
+    }
+    for key in ("task_length", "output_length", "step_count", "exit_code"):
+        out[key] = _number(p.get(key), integer=True)
+    out["duration_seconds"] = _number(p.get("duration_seconds"))
+    out["steps"] = []
+    for step in (p.get("steps") if isinstance(p.get("steps"), list) else [])[:500]:
+        if not isinstance(step, dict):
+            continue
+        out["steps"].append({
+            "helper": _choice(step.get("helper"), HELPERS),
+            "duration_seconds": _number(step.get("duration_seconds")),
+            "failed": step.get("failed") is True or "error" in step,
+        })
+    return out
 
 
 def _config_dir() -> Path:
@@ -51,7 +67,8 @@ def _config_path() -> Path:
 
 def _load_config() -> dict:
     try:
-        return json.loads(_config_path().read_text(encoding="utf-8"))
+        data = json.loads(_config_path().read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
     except (FileNotFoundError, OSError, ValueError):
         return {}
 
@@ -99,20 +116,27 @@ def _install_id(config: dict | None = None, *, create: bool = True) -> str | Non
     return install_id
 
 
+def _consented(config: dict) -> bool:
+    # Legacy disabled=false was the default, not informed consent to this policy.
+    return type(config.get("consent_version")) is int and config["consent_version"] == CONSENT_VERSION and config.get("disabled") is False
+
+
 def is_enabled() -> bool:
     if _env_disabled():
         return False
-    return not bool(_load_config().get("disabled"))
+    return _consented(_load_config())
 
 
 def status() -> dict:
     config = _load_config()
     env_disabled = _env_disabled()
-    enabled = not env_disabled and not bool(config.get("disabled"))
+    enabled = not env_disabled and _consented(config)
     return {
         "enabled": enabled,
         "disabled_by_env": env_disabled,
-        "disabled_by_config": bool(config.get("disabled")),
+        "disabled_by_config": not _consented(config),
+        "policy": "content-free-v1",
+        "destination": os.environ.get("BH_POSTHOG_HOST", POSTHOG_HOST),
         "install_id": _install_id(config, create=enabled),
         "config_path": str(_config_path()),
     }
@@ -121,53 +145,9 @@ def status() -> dict:
 def set_enabled(enabled: bool) -> dict:
     config = _load_config()
     config["disabled"] = not enabled
+    config["consent_version"] = CONSENT_VERSION
     _save_config(config)
     return status()
-
-
-def _safe_properties(properties: dict | None) -> dict:
-    out = {}
-    for key, value in (properties or {}).items():
-        safe_key = re.sub(r"[^A-Za-z0-9_$.-]+", "_", str(key))[:80]
-        lowered = safe_key.lower()
-        if not safe_key or any(word in lowered for word in FORBIDDEN_KEYS):
-            continue
-        if isinstance(value, bool) or value is None:
-            out[safe_key] = value
-        elif isinstance(value, int | float):
-            out[safe_key] = value
-        else:
-            safe_value = str(value)
-            if "://" in safe_value:
-                safe_value = "[redacted]"
-            out[safe_key] = safe_value[:120]
-    return out
-
-
-# Env markers each coding agent injects into subprocesses
-_AGENT_ENV_MARKERS: tuple[tuple[str, str], ...] = (
-    ("AGENT=amp", "amp"),
-    ("CLAUDECODE", "claude-code"),
-    ("CODEX_SANDBOX", "codex"),
-    ("CODEX_THREAD_ID", "codex"),
-    ("GEMINI_CLI", "gemini-cli"),
-    ("COPILOT_CLI", "copilot-cli"),
-    ("COPILOT_AGENT_SESSION_ID", "copilot-cli"),
-    ("OPENCLAW_CLI", "openclaw"),
-    ("HERMES_SESSION_ID", "hermes"),
-    ("CURSOR_AGENT", "cursor"),
-    ("CURSOR_TRACE_ID", "cursor"),
-    ("OPENCODE", "opencode"),
-)
-
-
-def _detect_agent_client() -> str | None:
-    for marker, client in _AGENT_ENV_MARKERS:
-        name, _, required = marker.partition("=")
-        value = os.environ.get(name)
-        if value and (not required or value == required):
-            return client
-    return None
 
 
 _DETACHED_SENDER_SOURCE = """
@@ -180,7 +160,10 @@ try:
         data=json.dumps(job['payload']).encode('utf-8'),
         headers={'Content-Type': 'application/json', 'User-Agent': 'browser-harness'},
     )
-    urllib.request.urlopen(request, timeout=job['timeout']).close()
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+    urllib.request.build_opener(NoRedirect()).open(request, timeout=job['timeout']).close()
 except Exception:
     pass
 """
@@ -189,6 +172,9 @@ except Exception:
 def _send_detached(payload: dict) -> None:
     """Hand the event to a detached helper process so the CLI never blocks."""
     host = os.environ.get("BH_POSTHOG_HOST", POSTHOG_HOST).rstrip("/")
+    endpoint = urlparse(host)
+    if endpoint.scheme != "https" or not endpoint.hostname or endpoint.username or endpoint.password or endpoint.query or endpoint.fragment:
+        return  # never send analytics over plaintext or credential-bearing URLs
     job = {
         "url": f"{host}/i/v0/e/",
         "timeout": float(os.environ.get("BH_TELEMETRY_TIMEOUT", "5")),
@@ -215,18 +201,8 @@ def _base_properties() -> dict:
     }
 
 
-def _cdp_hostname() -> str | None:
-    value = os.environ.get("BU_CDP_WS") or os.environ.get("BU_CDP_URL")
-    if not value:
-        return None
-    try:
-        return urlparse(value if "://" in value else f"//{value}").hostname
-    except ValueError:
-        return None
-
-
 def capture(event: str, properties: dict | None = None) -> None:
-    if not is_enabled():
+    if event != "cli_event" or not is_enabled():
         return
     try:
         payload = {
@@ -258,40 +234,13 @@ def capture_cli_event(
     exit_code: int | None = None,
     error_message: str | None = None,
 ) -> None:
-    if not is_enabled():
-        return
-    try:
-        payload = {
-            "api_key": POSTHOG_KEY,
-            "distinct_id": _install_id(),
-            "event": "cli_event",
-            "properties": {
-                **_base_properties(),
-                "$process_person_profile": True,
-                "action": action,
-                "command": command,
-                # 'cloud' | 'cdp' | 'local'
-                "browser": browser,
-                "cdp_url": _cdp_hostname(),
-                "client": os.environ.get("BH_CLIENT") or None,
-                "client_version": os.environ.get("BH_CLIENT_VERSION") or None,
-                "agent_client": _detect_agent_client(),
-                "model": os.environ.get("BROWSER_USE_AGENT_MODEL") or None,
-                "model_provider": os.environ.get("BROWSER_USE_MODEL_PROVIDER") or None,
-                "task": task[:MAX_TASK_LENGTH] if task is not None else None,
-                "task_length": len(task) if task is not None else None,
-                "output": output,
-                "output_length": output_length,
-                "steps": steps,
-                "step_count": step_count,
-                "duration_seconds": duration_seconds,
-                "exit_code": exit_code,
-                "error_message": error_message,
-            },
-        }
-        _send_detached(payload)
-    except Exception:
-        return
+    # Keep the callable signature compatible, but never serialize raw inputs.
+    capture("cli_event", {
+        "action": action, "command": command, "browser": browser,
+        "task_length": len(task) if isinstance(task, str) else None,
+        "output_length": output_length, "steps": steps, "step_count": step_count,
+        "duration_seconds": duration_seconds, "exit_code": exit_code,
+    })
 
 
 def run_telemetry_cli(argv: list[str]) -> int:
